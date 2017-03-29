@@ -39,7 +39,7 @@ function Init()
 
 			if(RightKeyPressed == true)
 			{
-				if(FIELD[PosY][PosX + ActiveFigure.FigureMatrix[0].length + 1] == 0)
+				if(FIELD[PosY][PosX + ActiveFigure.FigureMatrix[0].length] == 0)
 				{
 					for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
 					{
