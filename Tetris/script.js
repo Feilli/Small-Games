@@ -17,7 +17,7 @@ function Init()
 
 	    DrawField();
 
-		var ActiveFigure = new Figure(Math.floor(Math.random() * 6 + 1));
+		var ActiveFigure = new Figure(Math.floor(Math.random() * 7 + 1));
 
 		document.addEventListener("keydown", KeyDownHandler, false);
 		document.addEventListener("keyup", KeyUpHandler, false);
@@ -190,7 +190,7 @@ function Init()
 			{
 				PosY         = 0;
 				PosX         = Math.floor(Math.random() * 4 + 2);
-				ActiveFigure = new Figure(Math.floor(Math.random() * 6 + 1));
+				ActiveFigure = new Figure(Math.floor(Math.random() * 7 + 1));
 				UPDATE       = false;
 			}
 
