@@ -39,6 +39,7 @@ function Init()
 
 			if(RightKeyPressed == true)
 			{
+			    // Moving right
 				if(FIELD[PosY][PosX + ActiveFigure.FigureMatrix[0].length] == 0)
 				{
 					for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
@@ -53,9 +54,10 @@ function Init()
 					if(PosX + ActiveFigure.FigureMatrix[0].length < FIELD_WIDTH)
 						PosX++;
 				}
-			} 
+			}
 			else if(LeftKeyPressed)
 			{
+			    // Moving left
 				if(FIELD[PosY][PosX - 1] == 0)
 				{
 					for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
@@ -70,10 +72,11 @@ function Init()
 					if(PosX > 0)
 	    				PosX--;
 	    		}
-			} 
+			}
 			else if(DownKeyPressed)
 			{
-				if(FIELD[PosY + ActiveFigure.FigureMatrix.length][PosX] == 0)
+			    // Moving down
+				if(FIELD[PosY - 1 + ActiveFigure.FigureMatrix.length][PosX] == 0)
 				{
 					for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
 					{
@@ -84,9 +87,60 @@ function Init()
 						}
 					}
 
-					if(PosY + ActiveFigure.FigureMatrix.length < FIELD_HEIGHT)
+					if(PosY - 1 + ActiveFigure.FigureMatrix.length < FIELD_HEIGHT)
 	    				PosY++;
 	    		}
+			}
+			else if(UpKeyPressed)
+			{
+			    // Rotating clockwise
+			    
+			    var RotatedFigureMatrix = ActiveFigure.FigureMatrix[0].map(function(col, i)
+			    {
+                	return ActiveFigure.FigureMatrix.map(function(row, j)
+                	{
+						return ActiveFigure.FigureMatrix[ActiveFigure.FigureMatrix.length - j - 1][i];
+					})
+                });
+                
+                if(PosY - 1 + RotatedFigureMatrix.length <= FIELD.length
+                	&& PosX + RotatedFigureMatrix[0].length <= FIELD[0].length) {
+					var RotationAllowed = true;
+					LOOP:
+					for(var i = 0; i < RotatedFigureMatrix.length; i++)
+					{
+						for(var j = 0; j < RotatedFigureMatrix[i].length; j++)
+						{
+							// Does the rotated figure overlap with over figures?
+							if(FIELD[PosY - 1 + i][PosX + j] != 0
+								&& (i >= ActiveFigure.FigureMatrix.length
+								|| j >= ActiveFigure.FigureMatrix[0].length
+								|| ActiveFigure.FigureMatrix[i][j] == 0))
+							{
+								RotationAllowed = false;
+								debugger;
+								break LOOP;
+							}
+						}
+					}
+					
+					if(RotationAllowed)
+					{
+						for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
+						{
+							for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
+							{
+								if(ActiveFigure.FigureMatrix[i][j] != 0)
+									FIELD[PosY - 1 + i][PosX + j] = 0;
+							}
+						}
+						
+						ActiveFigure.FigureMatrix = RotatedFigureMatrix;
+					}
+	    		}
+	    		
+	    		// Only rotate once per key press
+	    		UpKeyPressed = false;
 			}
 
 		}, 75);
@@ -99,7 +153,10 @@ function Init()
 				{
 					for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
 					{
-						if(FIELD[PosY + i + 1][PosX + j] != 0 && ActiveFigure.FigureMatrix[i][j] != 0)
+						if(FIELD[PosY + i + 1][PosX + j] != 0
+							&& ActiveFigure.FigureMatrix[i][j] != 0
+							&& (i + 1 >= ActiveFigure.FigureMatrix.length
+							|| ActiveFigure.FigureMatrix[i + 1][j] == 0))
 						{
 							UPDATE = true;
 						}
