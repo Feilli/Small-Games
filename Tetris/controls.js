@@ -1,6 +1,7 @@
 
 var RightKeyPressed = false;
 var LeftKeyPressed = false;
+var DownKeyPressed = false;
 
 function KeyDownHandler(event)
 {
@@ -10,6 +11,9 @@ function KeyDownHandler(event)
     else if(event.keyCode == 37) {
         LeftKeyPressed = true;
     }
+    else if(event.keyCode == 40) {
+        DownKeyPressed = true;
+    }
 }
 
 function KeyUpHandler(event) {
@@ -18,6 +22,9 @@ function KeyUpHandler(event) {
     }
     else if(event.keyCode == 37) {
         LeftKeyPressed = false;
+    }
+    else if(event.keyCode == 40) {
+        DownKeyPressed = false;
     }
 }
 

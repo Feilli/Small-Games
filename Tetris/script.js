@@ -70,6 +70,23 @@ function Init()
 					if(PosX > 0)
 	    				PosX--;
 	    		}
+			} 
+			else if(DownKeyPressed)
+			{
+				if(FIELD[PosY + ActiveFigure.FigureMatrix.length][PosX] == 0)
+				{
+					for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
+					{
+						for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
+						{
+							if(ActiveFigure.FigureMatrix[i][j] != 0)
+								FIELD[PosY - 1 + i][PosX + j] = 0;
+						}
+					}
+
+					if(PosY + ActiveFigure.FigureMatrix.length < FIELD_HEIGHT)
+	    				PosY++;
+	    		}
 			}
 
 		}, 75);
