@@ -15,8 +15,6 @@ function Init()
 
 	    // PrintField();
 
-	    DrawField();
-
 		var ActiveFigure = new Figure(Math.floor(Math.random() * 7 + 1));
 
 		document.addEventListener("keydown", KeyDownHandler, false);
@@ -32,6 +30,17 @@ function Init()
 
 		var PosY = 0;
 		var PosX = Math.floor(Math.random() * 4 + 2);
+		
+		for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
+		{
+			for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
+			{
+				if(FIELD[PosY + i][PosX + j] == 0)
+					FIELD[PosY + i][PosX + j] = ActiveFigure.FigureMatrix[i][j];
+			}
+		}
+
+	    DrawField();
 
 		var UPDATE = false;
 
@@ -40,55 +49,155 @@ function Init()
 			if(RightKeyPressed == true)
 			{
 			    // Moving right
-				if(FIELD[PosY][PosX + ActiveFigure.FigureMatrix[0].length] == 0)
-				{
+			    
+				// Does the moved figure stay within the field?
+                if(PosX + ActiveFigure.FigureMatrix[0].length < FIELD_WIDTH) {
+                
+					var MoveAllowed = true;
+					LOOP:
 					for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
 					{
 						for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
 						{
-							if(ActiveFigure.FigureMatrix[i][j] != 0)
-								FIELD[PosY - 1 + i][PosX + j] = 0;
+							// Does the moved figure overlap with other figures?
+							if(FIELD[PosY + i][PosX + j + 1] != 0
+								&& (i >= ActiveFigure.FigureMatrix.length
+								|| j + 1 >= ActiveFigure.FigureMatrix[0].length
+								|| ActiveFigure.FigureMatrix[i][j + 1] == 0))
+							{
+								MoveAllowed = false;
+								break LOOP;
+							}
 						}
 					}
-
-					if(PosX + ActiveFigure.FigureMatrix[0].length < FIELD_WIDTH)
+			    
+			    	if (MoveAllowed)
+			    	{
+						// Remove the figure from the field
+						for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
+						{
+							for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
+							{
+								if(ActiveFigure.FigureMatrix[i][j] != 0)
+									FIELD[PosY + i][PosX + j] = 0;
+							}
+						}
+	
 						PosX++;
+						
+						// Add the figure to the field
+						for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
+						{
+							for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
+							{
+								if(ActiveFigure.FigureMatrix[i][j] != 0)
+									FIELD[PosY + i][PosX + j] = ActiveFigure.FigureMatrix[i][j];
+							}
+						}
+					}
 				}
 			}
 			else if(LeftKeyPressed)
 			{
 			    // Moving left
-				if(FIELD[PosY][PosX - 1] == 0)
-				{
+			    
+				// Does the moved figure stay within the field?
+                if(PosX > 0) {
+                
+					var MoveAllowed = true;
+					LOOP:
 					for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
 					{
 						for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
 						{
-							if(ActiveFigure.FigureMatrix[i][j] != 0)
-								FIELD[PosY - 1 + i][PosX + j] = 0;
+							// Does the moved figure overlap with other figures?
+							if(FIELD[PosY + i][PosX + j - 1] != 0
+								&& (i >= ActiveFigure.FigureMatrix.length
+								|| j - 1 >= ActiveFigure.FigureMatrix[0].length
+								|| ActiveFigure.FigureMatrix[i][j - 1] == 0))
+							{
+								MoveAllowed = false;
+								break LOOP;
+							}
 						}
 					}
-
-					if(PosX > 0)
-	    				PosX--;
+					
+			    	if (MoveAllowed)
+			    	{
+						// Remove the figure from the field
+						for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
+						{
+							for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
+							{
+								if(ActiveFigure.FigureMatrix[i][j] != 0)
+									FIELD[PosY + i][PosX + j] = 0;
+							}
+						}
+		
+						PosX--;
+						
+						// Add the figure to the field
+						for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
+						{
+							for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
+							{
+								if(ActiveFigure.FigureMatrix[i][j] != 0)
+									FIELD[PosY + i][PosX + j] = ActiveFigure.FigureMatrix[i][j];
+							}
+						}
+					}
 	    		}
 			}
 			else if(DownKeyPressed)
 			{
 			    // Moving down
-				if(FIELD[PosY - 1 + ActiveFigure.FigureMatrix.length][PosX] == 0)
-				{
+			    
+				// Does the moved figure stay within the field?
+                if(PosY + ActiveFigure.FigureMatrix.length < FIELD_HEIGHT)
+                {
+                
+					var MoveAllowed = true;
+					LOOP:
 					for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
 					{
 						for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
 						{
-							if(ActiveFigure.FigureMatrix[i][j] != 0)
-								FIELD[PosY - 1 + i][PosX + j] = 0;
+							// Does the moved figure overlap with other figures?
+							if(FIELD[PosY + i + 1][PosX + j] != 0
+								&& (i + 1 >= ActiveFigure.FigureMatrix.length
+								|| j >= ActiveFigure.FigureMatrix[0].length
+								|| ActiveFigure.FigureMatrix[i + 1][j] == 0))
+							{
+								MoveAllowed = false;
+								break LOOP;
+							}
 						}
 					}
-
-					if(PosY - 1 + ActiveFigure.FigureMatrix.length < FIELD_HEIGHT)
-	    				PosY++;
+					
+			    	if (MoveAllowed)
+			    	{
+						// Remove the figure from the field
+						for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
+						{
+							for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
+							{
+								if(ActiveFigure.FigureMatrix[i][j] != 0)
+									FIELD[PosY + i][PosX + j] = 0;
+							}
+						}
+		
+						PosY++;
+						
+						// Add the figure to the field
+						for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
+						{
+							for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
+							{
+								if(ActiveFigure.FigureMatrix[i][j] != 0)
+									FIELD[PosY + i][PosX + j] = ActiveFigure.FigureMatrix[i][j];
+							}
+						}
+					}
 	    		}
 			}
 			else if(UpKeyPressed)
@@ -103,22 +212,23 @@ function Init()
 					})
                 });
                 
-                if(PosY - 1 + RotatedFigureMatrix.length <= FIELD.length
+				// Does the moved figure stay within the field?
+                if(PosY + RotatedFigureMatrix.length <= FIELD.length
                 	&& PosX + RotatedFigureMatrix[0].length <= FIELD[0].length) {
+                	
 					var RotationAllowed = true;
 					LOOP:
 					for(var i = 0; i < RotatedFigureMatrix.length; i++)
 					{
 						for(var j = 0; j < RotatedFigureMatrix[i].length; j++)
 						{
-							// Does the rotated figure overlap with over figures?
-							if(FIELD[PosY - 1 + i][PosX + j] != 0
+							// Does the rotated figure overlap with other figures?
+							if(FIELD[PosY + i][PosX + j] != 0
 								&& (i >= ActiveFigure.FigureMatrix.length
 								|| j >= ActiveFigure.FigureMatrix[0].length
 								|| ActiveFigure.FigureMatrix[i][j] == 0))
 							{
 								RotationAllowed = false;
-								debugger;
 								break LOOP;
 							}
 						}
@@ -126,16 +236,27 @@ function Init()
 					
 					if(RotationAllowed)
 					{
+						// Remove the figure from the field
 						for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
 						{
 							for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
 							{
 								if(ActiveFigure.FigureMatrix[i][j] != 0)
-									FIELD[PosY - 1 + i][PosX + j] = 0;
+									FIELD[PosY + i][PosX + j] = 0;
 							}
 						}
 						
 						ActiveFigure.FigureMatrix = RotatedFigureMatrix;
+						
+						// Add the figure to the field
+						for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
+						{
+							for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
+							{
+								if(ActiveFigure.FigureMatrix[i][j] != 0)
+									FIELD[PosY + i][PosX + j] = ActiveFigure.FigureMatrix[i][j];
+							}
+						}
 					}
 	    		}
 	    		
@@ -143,12 +264,15 @@ function Init()
 	    		UpKeyPressed = false;
 			}
 
+			DrawField();
+
 		}, 75);
 
 		setInterval(function () {
 
-			if(PosY + ActiveFigure.FigureMatrix.length < FIELD.length && UPDATE == false)
+			if(PosY + ActiveFigure.FigureMatrix.length < FIELD.length)
 			{
+				LOOP:
 				for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
 				{
 					for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
@@ -159,22 +283,48 @@ function Init()
 							|| ActiveFigure.FigureMatrix[i + 1][j] == 0))
 						{
 							UPDATE = true;
+							break LOOP;
 						}
 					}
 				}
-
-				if(PosY > 0)
+			}
+			else
+			{
+				UPDATE = true;
+			}
+			
+			if(UPDATE == false)
+			{
+				// Remove the figure from the field
+				for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
 				{
-					for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
+					for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
 					{
-						for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
-						{
-							if(ActiveFigure.FigureMatrix[i][j] != 0)
-								FIELD[PosY - 1 + i][PosX + j] = 0;
-						}
+						if(ActiveFigure.FigureMatrix[i][j] != 0)
+							FIELD[PosY + i][PosX + j] = 0;
 					}
 				}
 
+				PosY++;
+
+				// Add the figure to the field
+				for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
+				{
+					for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
+					{
+						if(ActiveFigure.FigureMatrix[i][j] != 0)
+							FIELD[PosY + i][PosX + j] = ActiveFigure.FigureMatrix[i][j];
+					}
+				}
+			}
+			else
+			{
+				PosY         = 0;
+				PosX         = Math.floor(Math.random() * 4 + 2);
+				ActiveFigure = new Figure(Math.floor(Math.random() * 7 + 1));
+				UPDATE       = false;
+				
+				// Add the figure to the field
 				for(var i = 0; i < ActiveFigure.FigureMatrix.length; i++)
 				{
 					for(var j = 0; j < ActiveFigure.FigureMatrix[i].length; j++)
@@ -183,15 +333,6 @@ function Init()
 							FIELD[PosY + i][PosX + j] = ActiveFigure.FigureMatrix[i][j];
 					}
 				}
-
-				PosY++;
-			}
-			else
-			{
-				PosY         = 0;
-				PosX         = Math.floor(Math.random() * 4 + 2);
-				ActiveFigure = new Figure(Math.floor(Math.random() * 7 + 1));
-				UPDATE       = false;
 			}
 
 			DrawField();
